@@ -1,8 +1,8 @@
 import numpy as np
-import generategrid, vaildateboard
+import generategrid
+import vaildateboard
 
-def possible(row, column, number):
-    global grid
+def possible(grid, row, column, number):
     # Is the number in the row?
     for i in range(0,9):
         if grid[row][i] == number:
@@ -24,39 +24,33 @@ def possible(row, column, number):
         
     return True
 
-def solve():
-    global grid
+def solve(grid):
     for row in range(0, 9):
         for column in range(0, 9):
             if grid[row][column] == 0:
                 for number in range(1, 10):
-                    if possible(row, column, number):
+                    if possible(grid, row, column, number):
                         grid[row][column] = number
-                        if solve():  # Check if the puzzle is solved after placing the number
+                        if solve(grid):  # Check if the puzzle is solved after placing the number
                             return True
                         grid[row][column] = 0  # Backtrack if the number doesn't lead to a solution
                 return False  # Return False if no valid number is found for this cell
     return True  # Return True if all cells are filled (puzzle solved)
 
-grid = generategrid.generate_grid(20)
-
-print(grid)
-
-solve()
-
-print(grid)
-
-'''if __name__ == '__main__':
+if __name__ == '__main__':
     grid = generategrid.generate_grid(30)
 
+    print("Initial grid:")
     print(grid)
 
-    solve()
+    solved_grid = np.copy(grid)  # Make a copy of the grid for solving
 
-    print(grid)
-
-    if vaildateboard.is_valid(grid):
-        print("The Sudoku puzzle has been solved properly.")
+    if solve(solved_grid):
+        print("\nSolved grid:")
+        print(solved_grid)
+        if vaildateboard.is_valid(solved_grid):
+            print("\nThe Sudoku puzzle has been solved properly.")
+        else:
+            print("\nThe Sudoku puzzle has not been solved properly.")
     else:
-        print("The Sudoku puzzle has not been solved properly.")'''
-
+        print("\nUnable to solve the Sudoku puzzle.")
